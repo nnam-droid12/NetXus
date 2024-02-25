@@ -26,8 +26,8 @@ To get started with NetXus, follow these steps:
 
 ![Stack](google-tech.png)
 
-## SDG WE are Solving For.
-![Flow](netxus-sdg.png)
+## SDG We are Solving For.
+![SDG](netxus-sdg.png)
 
 
 ## License
