@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "825585777061",
+    "firebase_url": "https://arduino-test-324dd-default-rtdb.firebaseio.com",
+    "project_id": "arduino-test-324dd",
+    "storage_bucket": "arduino-test-324dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:825585777061:android:ac96966892fee6c935104c",
+        "android_client_info": {
+          "package_name": "com.nnatech.netxus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxoGTVyc955KJ_WiX70RrSSqU_bqglnmk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
