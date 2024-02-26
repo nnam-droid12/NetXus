@@ -16,8 +16,8 @@ class RemoteControl extends StatelessWidget {
           children: [
             Image.asset(
               'assets/images/google-ass.jpg',
-              width: 100,
-              height: 100,
+              width: 300,
+              height: 200,
             ),
             const SizedBox(height: 20),
             const Text(

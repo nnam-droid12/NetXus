@@ -39,10 +39,18 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   http: ^1.1.0
+  flutter_native_splash: ^2.3.7
+  
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  flutter_launcher_icons: ^0.13.1
+flutter_launcher_icons:  
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/netxus-logo.jpg"  
   
 
   # The "flutter_lints" package below contains a set of recommended lints to
