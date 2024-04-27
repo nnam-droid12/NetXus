@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:netxus/battery_status.dart';
-import 'package:netxus/remote_control.dart';
-// import 'package:notchai_frontend/screens/game.dart';
-import 'package:netxus/product_location.dart';
-import 'package:netxus/home_page.dart';
+import 'package:netxus/screens/battery_status.dart';
+import 'package:netxus/screens/home_page.dart';
+import 'package:netxus/screens/product_location.dart';
+import 'package:netxus/screens/remote_control.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
