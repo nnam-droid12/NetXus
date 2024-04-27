@@ -72,7 +72,13 @@ class _ProductLocationState extends State<ProductLocation> {
 
   Future<void> _cameraToPosition(LatLng pos) async {
     final GoogleMapController controller = await _mapController.future;
-    
+    CameraPosition _newCameraPosition = CameraPosition(
+      target: pos,
+      zoom: 13,
+    );
+    await controller.animateCamera(
+      CameraUpdate.newCameraPosition(_newCameraPosition),
+    );
   }
 
   Future<void> getLocationUpdates() async {
@@ -101,7 +107,7 @@ class _ProductLocationState extends State<ProductLocation> {
         setState(() {
           _currentP =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
-          print(_currentP);
+          _cameraToPosition(_currentP!);
         });
       }
     });
