@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:netxus/battery_status.dart';
 import 'package:netxus/remote_control.dart';
 // import 'package:notchai_frontend/screens/game.dart';
-import 'package:netxus/product_location.dart';
+import 'package:netxus/pages/mappage_screen.dart';
 import 'package:netxus/home_page.dart';
 
 class BottomNavBar extends StatefulWidget {
