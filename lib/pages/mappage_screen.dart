@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+// import 'package:http/http.dart' as http;
+// import 'dart:convert';
+
+import 'package:location/location.dart';
 
 class ProductLocation extends StatefulWidget {
   const ProductLocation({Key? key}) : super(key: key);
@@ -12,13 +16,21 @@ class ProductLocation extends StatefulWidget {
 
 class _ProductLocationState extends State<ProductLocation> {
   late GoogleMapController? mapController;
+
+  Location _locationController = new Location();
+
+  final Completer<GoogleMapController> _mapController =
+      Completer<GoogleMapController>();
+
   static const LatLng _center = LatLng(6.5244, 3.3792);
   static const LatLng _pMicrosoftPark = LatLng(6.4548, 3.4316);
-  List<Marker> markers = [];
+
+  LatLng? _currentP = null;
 
   @override
   void initState() {
     super.initState();
+    getLocationUpdates();
   }
 
   @override
@@ -28,23 +40,70 @@ class _ProductLocationState extends State<ProductLocation> {
         title: const Text("Find Nearby NetXus System"),
         backgroundColor: Colors.green[700],
       ),
-      body: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: _center,
-          zoom: 13.0,
-        ),
-        markers: {
-          Marker(
-              markerId: MarkerId("_currentLocation"),
-              icon: BitmapDescriptor.defaultMarker,
-              position: _center),
-          Marker(
-            markerId: MarkerId("_sourceLocation"),
-            icon: BitmapDescriptor.defaultMarker,
-            position: _pMicrosoftPark,
-          )
-        },
-      ),
+      body: _currentP == null
+          ? const Center(
+              child: Text('Loading...'),
+            )
+          : GoogleMap(
+              onMapCreated: (GoogleMapController controller) =>
+                  _mapController.complete(controller),
+              initialCameraPosition: CameraPosition(
+                target: _center,
+                zoom: 13.0,
+              ),
+              markers: {
+                Marker(
+                    markerId: MarkerId("_currentLocation"),
+                    icon: BitmapDescriptor.defaultMarker,
+                    position: _currentP!),
+                Marker(
+                    markerId: MarkerId("_sourceLocation"),
+                    icon: BitmapDescriptor.defaultMarker,
+                    position: _center),
+                Marker(
+                  markerId: MarkerId("_destinationLocation"),
+                  icon: BitmapDescriptor.defaultMarker,
+                  position: _pMicrosoftPark,
+                )
+              },
+            ),
     );
+  }
+
+  Future<void> _cameraToPosition(LatLng pos) async {
+    final GoogleMapController controller = await _mapController.future;
+    
+  }
+
+  Future<void> getLocationUpdates() async {
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await _locationController.serviceEnabled();
+    if (_serviceEnabled) {
+      _serviceEnabled = await _locationController.requestService();
+    } else {
+      return;
+    }
+
+    _permissionGranted = await _locationController.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await _locationController.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationController.onLocationChanged
+        .listen((LocationData currentLocation) {
+      if (currentLocation.latitude != null &&
+          currentLocation.longitude != null) {
+        setState(() {
+          _currentP =
+              LatLng(currentLocation.latitude!, currentLocation.longitude!);
+          print(_currentP);
+        });
+      }
+    });
   }
 }
