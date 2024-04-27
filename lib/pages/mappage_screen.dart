@@ -29,7 +29,7 @@ class _ProductLocationState extends State<ProductLocation> {
 
   LatLng? _currentP = null;
 
-  Map<PolygonId, Polyline> polylines = {};
+  Map<PolylineId, Polyline> polylines = {};
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _ProductLocationState extends State<ProductLocation> {
     getLocationUpdates().then(
       (_) => {
         getPolyLinePoints().then((coordinates) => {
-              print(coordinates),
+              generatePolylineFromPoints(coordinates),
             }),
       },
     );
@@ -76,6 +76,7 @@ class _ProductLocationState extends State<ProductLocation> {
                   position: _pMicrosoftPark,
                 )
               },
+              polylines: Set<Polyline>.of(polylines.values),
             ),
     );
   }
@@ -140,5 +141,18 @@ class _ProductLocationState extends State<ProductLocation> {
       print(result.errorMessage);
     }
     return polylineCoordinates;
+  }
+
+  void generatePolylineFromPoints(List<LatLng> polylineCoordinates) async {
+    PolylineId id = PolylineId("poly");
+    Polyline polyline = Polyline(
+      polylineId: id,
+      color: Colors.black,
+      points: polylineCoordinates,
+      width: 8,
+    );
+    setState(() {
+      polylines[id] = polyline;
+    });
   }
 }
