@@ -16,7 +16,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   int currentpageIndex = 0;
   final List<Widget> _widgetScreen = <Widget>[
     const MyHomePage(),
-    const ProductLocation(),
+    const MapPage(),
     const RemoteControl(),
     const FetchData(),
   ];

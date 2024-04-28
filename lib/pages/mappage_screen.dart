@@ -1,83 +1,105 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:location/location.dart';
+import 'package:netxus/const.dart';
+import 'package:http/http.dart' as http;
 
-import '../const.dart';
-
-class ProductLocation extends StatefulWidget {
-  const ProductLocation({Key? key}) : super(key: key);
+class MapPage extends StatefulWidget {
+  const MapPage({super.key});
 
   @override
-  State<ProductLocation> createState() => _ProductLocationState();
+  State<MapPage> createState() => _MapPageState();
 }
 
-class _ProductLocationState extends State<ProductLocation> {
-  late GoogleMapController? mapController;
-
+class _MapPageState extends State<MapPage> {
   Location _locationController = new Location();
-
   final Completer<GoogleMapController> _mapController =
       Completer<GoogleMapController>();
-
-  static const LatLng _center = LatLng(6.5244, 3.3792);
-  static const LatLng _pMicrosoftPark = LatLng(6.4548, 3.4316);
-
-  LatLng? _currentP = null;
-
+  LatLng? _currentLocation;
+  LatLng? _sourceLocation;
+  LatLng? _destinationLocation;
   Map<PolylineId, Polyline> polylines = {};
+
+  final TextEditingController _sourceLocationController =
+      TextEditingController();
+  final TextEditingController _destinationLocationController =
+      TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    getLocationUpdates().then(
-      (_) => {
-        getPolyLinePoints().then((coordinates) => {
-              generatePolylineFromPoints(coordinates),
-            }),
-      },
-    );
+    getLocationUpdates();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Find Nearby NetXus System"),
-        backgroundColor: Colors.green[700],
+        title: const Text('Find Installed NetXus System'),
       ),
-      body: _currentP == null
-          ? const Center(
-              child: Text('Loading...'),
-            )
-          : GoogleMap(
-              onMapCreated: (GoogleMapController controller) =>
-                  _mapController.complete(controller),
-              initialCameraPosition: CameraPosition(
-                target: _center,
-                zoom: 13.0,
-              ),
-              markers: {
-                Marker(
-                    markerId: MarkerId("_currentLocation"),
-                    icon: BitmapDescriptor.defaultMarker,
-                    position: _currentP!),
-                Marker(
-                    markerId: MarkerId("_sourceLocation"),
-                    icon: BitmapDescriptor.defaultMarker,
-                    position: _center),
-                Marker(
-                  markerId: MarkerId("_destinationLocation"),
-                  icon: BitmapDescriptor.defaultMarker,
-                  position: _pMicrosoftPark,
-                )
-              },
-              polylines: Set<Polyline>.of(polylines.values),
+      body: Stack(
+        children: [
+          _currentLocation == null
+              ? const Center(child: Text("Loading..."))
+              : GoogleMap(
+                  onMapCreated: (GoogleMapController controller) =>
+                      _mapController.complete(controller),
+                  initialCameraPosition: CameraPosition(
+                    target: _currentLocation!,
+                    zoom: 13,
+                  ),
+                  markers: {
+                    if (_sourceLocation != null)
+                      Marker(
+                        markerId: MarkerId("_sourceLocation"),
+                        icon: BitmapDescriptor.defaultMarker,
+                        position: _sourceLocation!,
+                      ),
+                    if (_destinationLocation != null)
+                      Marker(
+                        markerId: MarkerId("_destinationLocation"),
+                        icon: BitmapDescriptor.defaultMarker,
+                        position: _destinationLocation!,
+                      ),
+                    Marker(
+                      markerId: MarkerId("_currentLocation"),
+                      icon: BitmapDescriptor.defaultMarker,
+                      position: _currentLocation!,
+                    ),
+                  },
+                  polylines: Set<Polyline>.of(polylines.values),
+                ),
+          Positioned(
+            bottom: 20,
+            left: 10,
+            right: 10,
+            child: Column(
+              children: [
+                TextField(
+                  controller: _sourceLocationController,
+                  decoration: const InputDecoration(
+                    labelText: "Source Location",
+                  ),
+                ),
+                TextField(
+                  controller: _destinationLocationController,
+                  decoration: const InputDecoration(
+                    labelText: "Destination Location",
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => _getPolylinePoints(),
+                  child: const Text('Show Route'),
+                ),
+              ],
             ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -116,43 +138,124 @@ class _ProductLocationState extends State<ProductLocation> {
       if (currentLocation.latitude != null &&
           currentLocation.longitude != null) {
         setState(() {
-          _currentP =
+          _currentLocation =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
-          _cameraToPosition(_currentP!);
+          _cameraToPosition(_currentLocation!);
         });
       }
     });
   }
 
-  Future<List<LatLng>> getPolyLinePoints() async {
+  Future<void> _getPolylinePoints() async {
+    // Get source and destination locations from TextFields
+    String source = _sourceLocationController.text;
+    String destination = _destinationLocationController.text;
+
+    // Check if both fields are filled
+    if (source.isEmpty || destination.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter both source and destination locations'),
+        ),
+      );
+      return;
+    }
+
+    // Convert user input to LatLng objects using geocoding
+    List<LatLng> latLngPoints = [];
+    try {
+      // Geocode source location
+      final Uri sourceUri = Uri.parse(
+          'https://maps.googleapis.com/maps/api/geocode/json?address=$source&key=$GOOGLE_MAPS_API_KEY');
+      final http.Response sourceResponse = await http.get(sourceUri);
+      if (sourceResponse.statusCode == 200) {
+        final Map<String, dynamic> sourceData = jsonDecode(sourceResponse.body);
+        if (sourceData['results'].isNotEmpty) {
+          final double sourceLatitude =
+              sourceData['results'][0]['geometry']['location']['lat'];
+          final double sourceLongitude =
+              sourceData['results'][0]['geometry']['location']['lng'];
+          latLngPoints.add(LatLng(sourceLatitude, sourceLongitude));
+        } else {
+          throw Exception('Source location not found');
+        }
+      } else {
+        throw Exception('Failed to geocode source location');
+      }
+
+      // Geocode destination location
+      final Uri destinationUri = Uri.parse(
+          'https://maps.googleapis.com/maps/api/geocode/json?address=$destination&key=$GOOGLE_MAPS_API_KEY');
+      final http.Response destinationResponse = await http.get(destinationUri);
+      if (destinationResponse.statusCode == 200) {
+        final Map<String, dynamic> destinationData =
+            jsonDecode(destinationResponse.body);
+        if (destinationData['results'].isNotEmpty) {
+          final double destinationLatitude =
+              destinationData['results'][0]['geometry']['location']['lat'];
+          final double destinationLongitude =
+              destinationData['results'][0]['geometry']['location']['lng'];
+          latLngPoints.add(LatLng(destinationLatitude, destinationLongitude));
+        } else {
+          throw Exception('Destination location not found');
+        }
+      } else {
+        throw Exception('Failed to geocode destination location');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error finding location: ${e.toString()}'),
+        ),
+      );
+      return;
+    }
+
+    _sourceLocation = latLngPoints[0];
+    _destinationLocation = latLngPoints[1];
+
+    // Update markers on the map
+    setState(() {});
+
     List<LatLng> polylineCoordinates = [];
     PolylinePoints polylinePoints = PolylinePoints();
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
       GOOGLE_MAPS_API_KEY,
-      PointLatLng(_center.latitude, _center.longitude),
-      PointLatLng(_pMicrosoftPark.latitude, _pMicrosoftPark.longitude),
+      PointLatLng(latLngPoints[0].latitude, latLngPoints[0].longitude),
+      PointLatLng(latLngPoints[1].latitude, latLngPoints[1].longitude),
       travelMode: TravelMode.walking,
     );
+
     if (result.points.isNotEmpty) {
       result.points.forEach((PointLatLng point) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
       });
+
+      PolylineId id = PolylineId("poly");
+      Polyline polyline = Polyline(
+        polylineId: id,
+        color: Colors.blue,
+        points: polylineCoordinates,
+        width: 8,
+      );
+
+      setState(() {
+        polylines[id] = polyline;
+      });
     } else {
       print(result.errorMessage);
     }
-    return polylineCoordinates;
   }
 
-  void generatePolylineFromPoints(List<LatLng> polylineCoordinates) async {
-    PolylineId id = PolylineId("poly");
-    Polyline polyline = Polyline(
-      polylineId: id,
-      color: Colors.black,
-      points: polylineCoordinates,
-      width: 8,
-    );
-    setState(() {
-      polylines[id] = polyline;
-    });
-  }
+  // void generatePolyLineFromPoints(List<LatLng> polylineCoordinates) async {
+  //   PolylineId id = PolylineId("poly");
+  //   Polyline polyline = Polyline(
+  //       polylineId: id,
+  //       color: Colors.blue,
+  //       points: polylineCoordinates,
+  //       width: 8);
+  //   setState(() {
+  //     polylines[id] = polyline;
+  //   });
+  // }
 }
