@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:netxus/screens/bottom_navigation.dart';
+import 'package:netxus/screens/register_screen.dart';
 import 'package:netxus/widgets/curve_clipper.dart';
 import 'package:netxus/widgets/square_tile.dart';
 
@@ -31,6 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Text(
                 'NetXus',
                 style: TextStyle(
+                   fontFamily: 'Pacifico',
                   color: Theme.of(context).primaryColor,
                   fontSize: 30.0,
                   fontWeight: FontWeight.bold,
@@ -73,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 10.0),
               GestureDetector(
                 onTap: () => {
-                  
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavBar()))
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 60.0),
@@ -143,7 +146,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Align(
                   alignment: FractionalOffset.bottomCenter,
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> RegisterScreen()));
+                    },
                     child: Container(
                       alignment: Alignment.center,
                       color: Theme.of(context).primaryColor,

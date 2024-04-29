@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:netxus/screens/battery_status.dart';
+import 'package:netxus/screens/product_status.dart';
 import 'package:netxus/screens/home_page.dart';
 import 'package:netxus/screens/product_location.dart';
 import 'package:netxus/screens/remote_control.dart';
@@ -17,7 +17,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     const MyHomePage(),
     const ProductLocation(),
     const RemoteControl(),
-    const FetchData(),
+    const ProductStatus(),
   ];
 
   void initTapIcon(int index) {

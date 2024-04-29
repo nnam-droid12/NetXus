@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:netxus/screens/bottom_navigation.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -30,14 +31,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     'Hello Paul!',
                     style: Theme.of(context)
                         .textTheme
-                        .headline6
+                        .titleLarge
                         ?.copyWith(color: Colors.white),
                   ),
                   subtitle: Text(
-                    'Good Morning',
+                    'How are you doing today!',
                     style: Theme.of(context)
                         .textTheme
-                        .subtitle1
+                        .titleMedium
                         ?.copyWith(color: Colors.white54),
                   ),
                   trailing: const CircleAvatar(
@@ -104,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Icon(iconData, color: Colors.white)),
             const SizedBox(height: 8),
             Text(title.toUpperCase(),
-                style: Theme.of(context).textTheme.subtitle1)
+                style: Theme.of(context).textTheme.titleMedium)
           ],
         ),
       );

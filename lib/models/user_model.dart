@@ -16,6 +16,10 @@ class User {
     this.following= 4,
     this.followers= 4,
     this.posts = const [],
-    this.favorites= const [],
+    this.favorites= const [], required double energyUsedInMonth, required double energyUsed2day,
       });
+
+  get energyUsedInMonth => null;
+
+  get energyUsed2day => null;
 }
