@@ -1,17 +1,72 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:netxus/screens/bottom_navigation.dart';
 import 'package:netxus/screens/login_screen.dart';
 import 'package:netxus/widgets/curve_clipper.dart';
 import 'package:netxus/widgets/square_tile.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _RegisterScreenState createState() => _RegisterScreenState();
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  String email = "", password = "", username = "";
+  late TextEditingController usernameController;
+  late TextEditingController passwordController;
+  late TextEditingController emailController;
+ final _formkey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
+    usernameController = TextEditingController();
+    passwordController = TextEditingController();
+    emailController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    emailController.dispose();
+    super.dispose();
+  }
+
+   registration() async {
+    if (usernameController.text!=""&& emailController.text!="") {
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: email, password: password);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+          "Registered Successfully",
+          style: TextStyle(fontSize: 20.0),
+        )));
+        // ignore: use_build_context_synchronously
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => NavBar()));
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              backgroundColor: Colors.orangeAccent,
+              content: Text(
+                "Password Provided is too Weak",
+                style: TextStyle(fontSize: 18.0),
+              )));
+        } else if (e.code == "email-already-in-use") {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              backgroundColor: Colors.orangeAccent,
+              content: Text(
+                "Account Already exists",
+                style: TextStyle(fontSize: 18.0),
+              )));
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,24 +95,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 5.0),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(vertical: 15.0),
-                    fillColor: Colors.white,
-                    filled: true,
-                    hintText: 'Email',
-                    prefixIcon: Icon(
-                      Icons.email,
-                      size: 30.0,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                child: Form(
+                  key: _formkey,
+                  child: TextFormField(
+                    validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please Enter Email';
+                          }
+                          return null;
+                        },
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(vertical: 15.0),
+                      fillColor: Colors.white,
+                      filled: true,
+                      hintText: 'Email',
+                      prefixIcon: Icon(
+                        Icons.email,
+                        size: 30.0,
+                      ),
                     ),
                   ),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                child: TextField(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                child: TextFormField(
+                  validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please Enter username';
+                          }
+                          return null;
+                        },
+                  controller: usernameController,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.symmetric(vertical: 15.0),
                     fillColor: Colors.white,
@@ -71,9 +143,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 10.0),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                child: TextField(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                child: TextFormField(
+                  validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please Enter Password';
+                          }
+                          return null;
+                        },
+                  controller: passwordController,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.symmetric(vertical: 15.0),
                     fillColor: Colors.white,
@@ -89,9 +168,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 10.0),
               GestureDetector(
-                onTap: () => {
-                  
-                },
+                onTap: (){
+                        if(_formkey.currentState!.validate()){
+                          setState(() {
+                            email=emailController.text;
+                            username= usernameController.text;
+                            password=passwordController.text;
+                          });
+                        }
+                        registration();
+                      },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 60.0),
                   alignment: Alignment.center,
@@ -112,7 +198,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
 
-             // or continue with
+              // Or continue with
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Row(
@@ -142,16 +228,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               const SizedBox(height: 10),
 
-              // google + apple sign in buttons
+              // Google + Apple sign in buttons
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // google button
+                  // Google button
                   SquareTile(imagePath: 'assets/images/google.png'),
 
                   SizedBox(width: 25),
 
-                  // apple button
+                  // Apple button
                   SquareTile(imagePath: 'assets/images/apple.png')
                 ],
               ),

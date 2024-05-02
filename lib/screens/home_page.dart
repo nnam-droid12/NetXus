@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:netxus/screens/bottom_navigation.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);

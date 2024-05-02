@@ -5,10 +5,9 @@ import 'package:netxus/widgets/curve_clipper.dart';
 import 'package:netxus/widgets/square_tile.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _LoginScreenState createState() => _LoginScreenState();
 }
 
@@ -33,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Text(
                 'NetXus',
                 style: TextStyle(
-                   fontFamily: 'Pacifico',
+                  fontFamily: 'Pacifico',
                   color: Theme.of(context).primaryColor,
                   fontSize: 30.0,
                   fontWeight: FontWeight.bold,
@@ -57,8 +56,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 10.0),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                 child: TextField(
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.symmetric(vertical: 15.0),
@@ -69,14 +68,26 @@ class _LoginScreenState extends State<LoginScreen> {
                       Icons.lock,
                       size: 30.0,
                     ),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        // Implement your forgot password functionality here
+                      },
+                      icon: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.error_outline, // Placeholder for forgot password icon
+                          size: 30.0,
+                        ),
+                      ),
+                    ),
                   ),
                   obscureText: true,
                 ),
               ),
               const SizedBox(height: 10.0),
               GestureDetector(
-                onTap: () => {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavBar()))
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => NavBar()));
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 60.0),
@@ -98,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-             // or continue with
+              // Or continue with
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Row(
@@ -128,16 +139,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 10),
 
-              // google + apple sign in buttons
+              // Google + Apple sign in buttons
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // google button
+                  // Google button
                   SquareTile(imagePath: 'assets/images/google.png'),
 
                   SizedBox(width: 25),
 
-                  // apple button
+                  // Apple button
                   SquareTile(imagePath: 'assets/images/apple.png')
                 ],
               ),
@@ -147,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   alignment: FractionalOffset.bottomCenter,
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> RegisterScreen()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
                     },
                     child: Container(
                       alignment: Alignment.center,

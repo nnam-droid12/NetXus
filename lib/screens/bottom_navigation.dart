@@ -1,83 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:netxus/screens/product_status.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:netxus/screens/home_page.dart';
 import 'package:netxus/screens/product_location.dart';
+import 'package:netxus/screens/product_status.dart';
 import 'package:netxus/screens/remote_control.dart';
 
-class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({super.key});
+class NavBar extends StatefulWidget {
+  const NavBar({Key? key}) : super(key: key);
 
   @override
-  State<BottomNavBar> createState() => _BottomNavBarState();
+  State<NavBar> createState() => _NavBarState();
 }
 
-class _BottomNavBarState extends State<BottomNavBar> {
-  int currentpageIndex = 0;
-  final List<Widget> _widgetScreen = <Widget>[
+class _NavBarState extends State<NavBar> {
+  int currentIndex = 0;
+  List<Widget> screens = [
     const MyHomePage(),
     const ProductLocation(),
     const RemoteControl(),
     const ProductStatus(),
   ];
 
-  void initTapIcon(int index) {
-    setState(() {
-      currentpageIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _widgetScreen[currentpageIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        elevation: 8,
-        onTap: initTapIcon,
-        currentIndex: currentpageIndex,
-        showUnselectedLabels: false,
-        showSelectedLabels: false,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color.fromARGB(255, 11, 140, 123),
-        unselectedItemColor:
-            const Color(0xff00c6ad), // Changed unselected color to grey
-        items: [
-          _buildNavBarItem(Icons.home, "Home", 0),
-          _buildNavBarItem(Icons.scanner_rounded, "Location", 1),
-          _buildNavBarItem(Icons.map_outlined, "Assistant", 2),
-          _buildNavBarItem(Icons.map_outlined, "Status", 3),
-        ],
-      ),
-    );
-  }
-
-  BottomNavigationBarItem _buildNavBarItem(
-      IconData icon, String label, int index) {
-    return BottomNavigationBarItem(
-      icon: Column(
-        children: [
-          Icon(icon),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-            ),
+      bottomNavigationBar: CurvedNavigationBar(
+        index: currentIndex,
+        backgroundColor: Colors.white,
+        color: Theme.of(context).primaryColor,
+        animationDuration: const Duration(milliseconds: 300),
+        height: 65,
+        onTap: (index) => setState(() => currentIndex = index),
+        items: const [
+          Icon(
+            Icons.home,
+            size: 28,
+            color: Colors.white,
+          ),
+          Icon(
+            Icons.location_on, // Changed to a location pin icon
+            size: 28,
+            color: Colors.white,
+          ),
+          Icon(
+            Icons.settings_remote, // Changed to a remote control icon
+            size: 28,
+            color: Colors.white,
+          ),
+          Icon(
+            Icons.notifications_active, 
+            size: 28,
+            color: Colors.white,
           ),
         ],
       ),
-      label: "", // Set label to empty string to hide default label
-      activeIcon: Column(
-        children: [
-          Icon(icon),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.blueGrey,
-            ),
-          ),
-        ],
-      ),
+      body: screens[currentIndex],
     );
   }
 }
