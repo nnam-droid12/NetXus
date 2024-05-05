@@ -16,7 +16,7 @@ class _NavBarState extends State<NavBar> {
   int currentIndex = 0;
   List<Widget> screens = [
     const MyHomePage(),
-    const ProductLocation(),
+    const MapPage(),
     const RemoteControl(),
     const ProductStatus(),
   ];

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 class EnergyUsageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
