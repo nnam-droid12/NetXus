@@ -12,7 +12,9 @@ dependencies:
     sdk: flutter
   firebase_database:
   firebase_core:
-  google_maps_flutter: ^2.5.3 
+  google_maps_flutter: ^2.5.3
+  location: ^5.0.0
+  flutter_polyline_points: ^2.0.0 
 
 
   cupertino_icons: ^1.0.2
