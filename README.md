@@ -22,6 +22,9 @@ To get started with NetXus, follow these steps:
 
 3. select your favorite emulator or use a physical device and test the app.
 
+## Product Prototype
+![Product_Prototype](pro1.jpg)
+
 ## NetXus Schematic
 ![Schematic](netxus-schematic.jpg)
 
