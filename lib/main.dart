@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:netxus/bottom_navigation.dart';
 import 'package:flutter/services.dart';
 // ignore: depend_on_referenced_packages
 import 'package:firebase_core/firebase_core.dart';
+import 'package:netxus/screens/login_screen.dart';
 
 Future <void> main() async {
 
@@ -24,12 +24,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Dashboard',
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primaryColor: Colors.green,
       ),
-      home: const BottomNavBar(),
+      home: const LoginScreen(),
     );
   }
 }
-
-
-
