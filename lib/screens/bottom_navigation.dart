@@ -3,7 +3,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:netxus/screens/home_page.dart';
 import 'package:netxus/screens/product_location.dart';
 import 'package:netxus/screens/product_status.dart';
-import 'package:netxus/screens/remote_control.dart';
+import 'package:netxus/screens/chat_screen.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -17,7 +17,7 @@ class _NavBarState extends State<NavBar> {
   List<Widget> screens = [
     const MyHomePage(),
     const MapPage(),
-    const RemoteControl(),
+    const ChatScreen(),
     const ProductStatus(),
   ];
 

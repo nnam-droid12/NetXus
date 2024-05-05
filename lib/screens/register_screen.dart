@@ -78,7 +78,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ClipPath(
                 clipper: CurveClipper(),
                 child: Image(
-                  height: MediaQuery.of(context).size.height / 2.8,
+                  height: MediaQuery.of(context).size.height / 3.0,
                   width: double.infinity,
                   image: const AssetImage('assets/images/login_background.jpg'),
                   fit: BoxFit.cover,
@@ -89,7 +89,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 style: TextStyle(
                   fontFamily: 'Pacifico',
                   color: Theme.of(context).primaryColor,
-                  fontSize: 30.0,
+                  fontSize: 26.0,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 10.0,
                 ),

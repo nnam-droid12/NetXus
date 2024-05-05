@@ -40,6 +40,7 @@ class _MapPageState extends State<MapPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Find Installed NetXus System'),
+        backgroundColor: Colors.green,
       ),
       body: Stack(
         children: [
@@ -94,6 +95,7 @@ class _MapPageState extends State<MapPage> {
                 ElevatedButton(
                   onPressed: () => _getPolylinePoints(),
                   child: const Text('Show Route'),
+                  
                 ),
               ],
             ),
